@@ -24,7 +24,9 @@ RUN bundle install
 COPY . .
 
 # ENTRYPOINT を設定し、コンテナ起動時に常に実行されるスクリプトを指定
-ENTRYPOINT ["./bin/docker-entrypoint"]
+COPY entrypoint.sh /usr/bin/
+RUN chmod +x /usr/bin/entrypoint.sh
+ENTRYPOINT ["entrypoint.sh"]
 
 # CMD を設定し、デフォルトのサーバ起動コマンドを指定
 CMD ["rails", "server", "-b", "0.0.0.0"]
