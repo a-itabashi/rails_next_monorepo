@@ -1,0 +1,46 @@
+services:
+  db:
+    image: mysql:8.4
+    # Credentialで管理すべきだが、今回はべタ書きで対応
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: myapp_development
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+  backend:
+    build:
+      context: ./backend
+    command: bash -c "bundle exec rails s -b '0.0.0.0'"
+    volumes:
+      - ./backend:/rails-app
+      - bundle_data:/rails-app/vendor/bundle
+      - yarn_data:/rails-app/node_modules
+    ports:
+      - 3000:3000
+    depends_on:
+      - db
+    # rails_helper.rbの環境変数の設定を'test'に修正をすること
+    environment:
+      - RAILS_ENV=development
+    working_dir: /rails-app
+    tty: true
+    stdin_open: true
+  frontend:
+    build:
+      context: ./frontend
+    command: bash -c "npm run dev"
+    volumes:
+      - ./frontend:/next-app
+    ports:
+      - "8000:3000"
+    working_dir: /next-app
+    tty: true
+    stdin_open: true
+volumes:
+  mysql_data:
+  bundle_data:
+  yarn_data:
