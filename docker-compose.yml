@@ -24,7 +24,7 @@ services:
       - db
     environment:
       - DB_HOST=db
-      - DB_NAME=user
+      - DB_USER=user
       - DB_PASSWORD=password
       - DB_NAME=rails_app_development
     working_dir: /rails-app
